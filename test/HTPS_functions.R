@@ -26,21 +26,21 @@ split_cleavage<-function (input, intename, debugs_plot=FALSE) {
   tmp<-data.frame(unique(tmp$peptide))
   tmp<-subset(tmp, tmp$unique.tmp.peptide.!="________________")
   return (tmp)
-}  
+}
 
 
 cbind.fill <- function(...){
-  nm <- list(...) 
+  nm <- list(...)
   nm <- lapply(nm, as.matrix)
-  n <- max(sapply(nm, nrow)) 
-  do.call(cbind, lapply(nm, function (x) 
-    rbind(x, matrix(, n-nrow(x), ncol(x))))) 
+  n <- max(sapply(nm, nrow))
+  do.call(cbind, lapply(nm, function (x)
+    rbind(x, matrix(, n-nrow(x), ncol(x)))))
 }
 
 # change location X.csv file
 start_fun<-function (input, aa_pos) {
   tmp_a<-read.csv(aa_pos, header = F, stringsAsFactors = F, sep =",")
-  colnames(tmp_a)<-c('cleavage') 
+  colnames(tmp_a)<-c('cleavage')
   tmp1<-data.frame(input[,1], stringsAsFactors = F)
   tmp1<-data.frame(tmp1[!apply(tmp1 == "", 1, all),], stringsAsFactors = F)
   colnames(tmp1)<-c('cleavage')
@@ -102,8 +102,8 @@ applyBy <- function(x, by, fun, ...)
     split.index <- by
   }
   index.list <- split(seq(from = 1, to = nc), split.index)
-  
-  
+
+
   sapply(index.list, function(i)
   {
     do.call(fun, list(x[, i], ...))
@@ -116,7 +116,7 @@ calc_stats<-function (input, debugs_plot=FALSE) {
   tmp$FC<-tmp$X1-tmp$X2
   t.res<-apply(tmp[,c(2:7)], 1, function (x) t.test(x[1:3],x[4:6],paired=FALSE, var.equal = TRUE, alternative =  "two.sided"))
   tmp$pval<-unlist(lapply(t.res, function (x) x$p.val))
-  tmp$pval_adj<-p.adjust(p= tmp$pval, method = "BH") 
+  tmp$pval_adj<-p.adjust(p= tmp$pval, method = "BH")
   tmp$FC_cor<-ifelse(tmp$pval_adj < 0.01, tmp$FC, 0)
   tmp$FC_cor_pos<-ifelse(tmp$FC_cor > 0, tmp$FC_cor, 0)
   if (debugs_plot==TRUE) {
@@ -151,7 +151,7 @@ block_entropy_function<-function(input, debugs_plot=FALSE) {
   tmp_1$B3_1<-tmp[9,7]+tmp[10,7]+tmp[11,7]+tmp[12,7]
   tmp_1$B4_1<-tmp[9,7]+tmp[10,7]+tmp[11,7]+tmp[12,7]+tmp[13,7]
   tmp_1<-tmp_1[,c(5,4,3,2,6,7,8,9)]
-  
+
   tmp_2<-data.frame(0)
   tmp_2$B1<-tmp[8,8]
   tmp_2$B2<-tmp[7,8]+tmp[8,8]
@@ -164,7 +164,7 @@ block_entropy_function<-function(input, debugs_plot=FALSE) {
   tmp_2$B3_1<-tmp[9,8]+tmp[10,8]+tmp[11,8]+tmp[12,8]
   tmp_2$B4_1<-tmp[9,8]+tmp[10,8]+tmp[11,8]+tmp[12,8]+tmp[13,8]
   tmp_2<-tmp_2[,c(5,4,3,2,6,7,8,9)]
-  
+
   tmp_3<-rbind(tmp_1,tmp_2)
   tmp_4<-tmp_3[2,]-tmp_3[1,]
   if (debugs_plot==TRUE) {
@@ -175,7 +175,7 @@ block_entropy_function<-function(input, debugs_plot=FALSE) {
   tmp_3<-rbind(tmp_3, tmp_4)
   rownames(tmp_3)<-c("ctrl", "protease", "DELTA")
   return(tmp_3)
-  
+
 }
 
 specificity_entropy_tda<-function(cols, HTPS_DB) {
@@ -187,14 +187,11 @@ specificity_entropy_tda<-function(cols, HTPS_DB) {
   decoy_cleavages<- create_decoy(table_cleavages, HTPS_DB,123)
   decoy_cleavages_table<-data.frame(apply(decoy_cleavages,2, table))
   decoy_cleavages_spec<-specificity_function_decoy(decoy_cleavages_table)
-  
+
   table_cleavages_table<-table_cleavages_table[-which(rownames(table_cleavages_table) %in% "X"),]
   entropy_1<-entropy_function(table_cleavages_table)
   entropy_decoy1<-entropy_function(decoy_cleavages_table)
-  
+
   comb = list("targ_spec" = table_cleavages_spec, "dec_spec" = decoy_cleavages_spec, 'targ_entr'=entropy_1, 'dec_entr'=entropy_decoy1)
   return (comb)
 }
-
-
-
