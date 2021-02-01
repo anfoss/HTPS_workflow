@@ -1,5 +1,7 @@
 # HTPS_workflow
 
+[![DOI](https://zenodo.org/badge/278842318.svg)](https://zenodo.org/badge/latestdoi/278842318)
+
 R markdown and file for analysis of data derived from HTPS workflow to characterize proteases
 
 
